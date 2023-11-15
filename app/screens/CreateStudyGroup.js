@@ -1,37 +1,27 @@
 //This is not an actual HomePage. This is just a file to test
 
-import React, { useState } from 'react';
+import React from 'react';
 import { View, TextInput, Button, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 import colors from '../config/Colors';
 
 function HomePage(props) { 
     
-    const navigateToCreateStudyGroup = () => {
-        props.navigation.navigate('CreateStudyGroup'); 
-    }
+    // const navigateToCreateStudyGroup = () => {
+    //     props.navigation.navigate('CreateStudyGroup'); 
+    // }
 
-    const navigateToJoinStudyGroup = () => {
-        props.navigation.navigate('JoinStudyGroup'); 
-    }
+    // const navigateToJoinStudyGroup = () => {
+    //     props.navigation.navigate('JoinStudyGroup'); 
+    // }
     
     return (
         
         <View style={styles.container}>
             
-            {/* Create Study Group Button */}
-           <TouchableOpacity style={styles.button} onPress={navigateToCreateStudyGroup}>
                 <Text style={styles.buttonText}>
                     Create a Study Group
                 </Text>
-            </TouchableOpacity>
-
-            {/* Join Study Group Button */}
-            <TouchableOpacity style={styles.button} onPress={navigateToJoinStudyGroup}>
-                <Text style={styles.buttonText}>
-                    Join a Study Group
-                </Text>
-            </TouchableOpacity>
         </View>
     );
 }

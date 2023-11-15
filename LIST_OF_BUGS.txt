@@ -2,7 +2,6 @@ email entry on SignUpPage - Auto capital first letter, no special characters bei
 
 Remove option to go back after successful sign up.
 
-
-safi changes
+safi does not change
 anchal changes done
 this is a new line
