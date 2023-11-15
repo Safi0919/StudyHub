@@ -2,4 +2,3 @@ email entry on SignUpPage - Auto capital first letter, no special characters bei
 
 Remove option to go back after successful sign up.
 
-This is a try
