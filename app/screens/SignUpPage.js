@@ -13,10 +13,18 @@ function SignUpPage(props) {
     // Defining variables
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [verifyPassword, setVerifyPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+   const containsSpecialCharacter = (username) => {
+    // Regular expression to match any special character
+    const specialCharacterRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+    return specialCharacterRegex.test(username);
+  };
 
     // Email validation function
     const isValidEmail = (email) => {
@@ -26,22 +34,52 @@ function SignUpPage(props) {
     };
 
     // Checking if New User or Not
-    const isAlrUser = async(email) => {
+    const isAlrUser = async(username) => {
 
-        const sanitizedEmail = email.replace(/[.#$[\]]/g, '_');
-        const userRef = ref(db, 'users/' + sanitizedEmail);
+        const userRef = ref(db, 'users/' + username);
         try {
             const snapshot = await get(userRef);
             return snapshot.exists();
         }
         catch (error) {
-            console.error('Error fetching email from the database', error);
+            console.error('Error fetching username from the database', error);
             return false;
         }
     };
 
+    const isAlrEmail = async(email) => {
+
+                const userRef = ref(db, 'users/' + email);
+                try {
+                    const snapshot = await get(userRef);
+                    return snapshot.exists();
+                }
+                catch (error) {
+                    console.error('Error fetching email from the database', error);
+                    return false;
+                }
+            
+    };
+
+    
+
     //function to add data to firebase
     const dataAddOn = async() => {
+
+        if (containsSpecialCharacter(username)) {
+            console.log('String contains special character(s).');
+
+            const errorMessage = 'String contains special character(s).';
+            setErrorMessage(errorMessage);
+
+      // Clear the error message after 5 seconds
+            setTimeout(() => {
+            setErrorMessage('');
+            }, 3500);
+
+            return;
+            } 
+
 
         if (!isValidEmail(email)) {
 
@@ -68,11 +106,13 @@ function SignUpPage(props) {
             return;
         }
 
-        const emailInUse = await isAlrUser(email);
+        const emailInUse = await isAlrEmail(username);
+
+        const usernameInUse = await isAlrUser(username);
 
         if (emailInUse) {
 
-            const errorMessage = 'This Email is Already In Use';
+            const errorMessage = 'This email already exists';
             setErrorMessage(errorMessage);
 
       // Clear the error message after 5 seconds
@@ -83,9 +123,21 @@ function SignUpPage(props) {
             return;
         }
 
+        if (usernameInUse) {
 
-        const sanitizedEmail = email.replace(/[.#$[\]]/g, '_'); // Replace invalid characters with "_"
-        const userRef = ref(db, 'users/' + sanitizedEmail);
+            const errorMessage = 'This username already exists';
+            setErrorMessage(errorMessage);
+
+      // Clear the error message after 5 seconds
+            setTimeout(() => {
+            setErrorMessage('');
+            }, 3500);
+
+            return;
+        }
+
+        const userRef = ref(db, 'users/' + username);
+        const emailRef = ref(db, 'email/' + email);
 
         const userData = {
             firstName: firstName,
@@ -94,6 +146,19 @@ function SignUpPage(props) {
             password: password,
         };
 
+        const emailData = {
+            email: email,
+        };
+
+        set(emailRef, emailData)
+            .then(() => {
+                console.log('Email added successfully');
+                setEmail('');
+            })
+            .catch((error) => {
+                console.error('Error adding email: ', error);
+            });
+        
         set(userRef, userData)
             .then(() => {
                 console.log('Data added successfully');
@@ -125,6 +190,13 @@ function SignUpPage(props) {
                 placeholderTextColor="gray"
                 placeholder="Last Name"
                 onChangeText={(text) => setLastName(text)}
+            />
+            <TextInput
+                style={styles.input}
+                placeholderTextColor="gray"
+                placeholder="Username"
+                autoCapitalize="none"
+                onChangeText={(text) => setUsername(text)}
             />
             <TextInput
                 style={styles.input}
