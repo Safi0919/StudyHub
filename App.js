@@ -4,6 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './app/screens/LoginPage';
 import SignUpPage from './app/screens/SignUpPage';
 import HomePage from './app/screens/HomePage';
+import CreateStudyGroup from './app/screens/CreateStudyGroup';
+import JoinStudyGroup from './app/screens/JoinStudyGroup';
 import ResetPasswordPage from './app/screens/ResetPasswordPage';
 import ForgotPasswordPage from './app/screens/ForgotPasswordPage';
 
@@ -19,6 +21,8 @@ export default function App() {
                 <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" component={SignUpPage} options={{ headerShown: false }}/>
                 <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }}/>
+                <Stack.Screen name="CreateStudyGroup" component={CreateStudyGroup} options={{ headerShown: false }}/>
+                <Stack.Screen name="JoinStudyGroup" component={JoinStudyGroup} options={{ headerShown: false }}/>
                 <Stack.Screen name="ForgotPasswordPage" component={ForgotPasswordPage} options={{ headerShown: false }}/>
                 <Stack.Screen name="ResetPasswordPage" component={ResetPasswordPage} options={{ headerShown: false }}/>
             </Stack.Navigator>
