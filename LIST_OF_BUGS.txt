@@ -1,0 +1,3 @@
+email entry on SignUpPage - Auto capital first letter, no special characters being accpeted.
+
+Remove option to go back after successful sign up.
