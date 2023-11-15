@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { db } from '../../config';
-import { ref, set} from 'firebase/database';
+import { ref, set,get} from 'firebase/database';
 
 import colors from '../config/Colors';
 
@@ -18,8 +18,43 @@ function SignUpPage(props) {
     const [verifyPassword, setVerifyPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Email validation function
+    const isValidEmail = (email) => {
+    // Use a regular expression for basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+    };
+
+    // Checking if New User or Not
+    const isAlrUser = async(email) => {
+
+        const sanitizedEmail = email.replace(/[.#$[\]]/g, '_');
+        const userRef = ref(db, 'users/' + sanitizedEmail);
+        try {
+            const snapshot = await get(userRef);
+            return snapshot.exists();
+        }
+        catch (error) {
+            console.error('Error fetching email from the database', error);
+            return false;
+        }
+    };
+
     //function to add data to firebase
-    const dataAddOn = () => {
+    const dataAddOn = async() => {
+
+        if (!isValidEmail(email)) {
+
+            const errorMessage = 'Invalid email format';
+            setErrorMessage(errorMessage);
+
+      // Clear the error message after 5 seconds
+            setTimeout(() => {
+            setErrorMessage('');
+            }, 3500);
+
+            return;
+        }
 
         if (password !== verifyPassword) {
             const errorMessage = 'Password and verify password do not match';
@@ -33,7 +68,24 @@ function SignUpPage(props) {
             return;
         }
 
-        const userRef = ref(db, 'users/' + email); // Define the reference to the user data
+        const emailInUse = await isAlrUser(email);
+
+        if (emailInUse) {
+
+            const errorMessage = 'This Email is Already In Use';
+            setErrorMessage(errorMessage);
+
+      // Clear the error message after 5 seconds
+            setTimeout(() => {
+            setErrorMessage('');
+            }, 3500);
+
+            return;
+        }
+
+
+        const sanitizedEmail = email.replace(/[.#$[\]]/g, '_'); // Replace invalid characters with "_"
+        const userRef = ref(db, 'users/' + sanitizedEmail);
 
         const userData = {
             firstName: firstName,
@@ -78,6 +130,7 @@ function SignUpPage(props) {
                 style={styles.input}
                 placeholderTextColor="gray"
                 placeholder="Email"
+                autoCapitalize="none"
                 onChangeText={(text) => setEmail(text)}
             />
             <TextInput

@@ -67,6 +67,7 @@ function LoginPage(props) {
                 style={styles.input}
                 placeholder="Username/Email"
                 placeholderTextColor="gray"
+                autoCapitalize = 'none'
                 onChangeText={(text) => handleInputChange('email', text)}
             />
 
